@@ -43,6 +43,23 @@ func request_BuyService_Buy_0(ctx context.Context, marshaler runtime.Marshaler, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["wager_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "wager_id")
+	}
+
+	protoReq.WagerId, err = runtime.Uint32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "wager_id", err)
+	}
+
 	msg, err := client.Buy(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -58,6 +75,23 @@ func local_request_BuyService_Buy_0(ctx context.Context, marshaler runtime.Marsh
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["wager_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "wager_id")
+	}
+
+	protoReq.WagerId, err = runtime.Uint32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "wager_id", err)
 	}
 
 	msg, err := server.Buy(ctx, &protoReq)
@@ -79,7 +113,7 @@ func RegisterBuyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.BuyService/Buy", runtime.WithHTTPPathPattern("/buy"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.BuyService/Buy", runtime.WithHTTPPathPattern("/buy/{wager_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -102,7 +136,7 @@ func RegisterBuyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 // RegisterBuyServiceHandlerFromEndpoint is same as RegisterBuyServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterBuyServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -143,7 +177,7 @@ func RegisterBuyServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/v1.BuyService/Buy", runtime.WithHTTPPathPattern("/buy"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/v1.BuyService/Buy", runtime.WithHTTPPathPattern("/buy/{wager_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -163,7 +197,7 @@ func RegisterBuyServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 }
 
 var (
-	pattern_BuyService_Buy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"buy"}, ""))
+	pattern_BuyService_Buy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"buy", "wager_id"}, ""))
 )
 
 var (

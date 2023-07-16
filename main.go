@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"io/ioutil"
 	"net"
 	"os"
@@ -11,8 +12,7 @@ import (
 
 	"github.com/dotdak/exchange-system/gateway"
 	"github.com/dotdak/exchange-system/handler"
-	"github.com/dotdak/exchange-system/insecure"
-	pbExample "github.com/dotdak/exchange-system/proto"
+	"github.com/dotdak/exchange-system/pkg/insecure"
 	v1 "github.com/dotdak/exchange-system/proto/v1"
 )
 
@@ -31,10 +31,12 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbExample.RegisterUserServiceServer(s, handler.New())
 
 	// TODO
-	h := handler.NewRepo(nil, nil)
+	h, err := handler.BuildHandler(context.Background())
+	if err != nil {
+		panic(err)
+	}
 	v1.RegisterBuyServiceServer(s, h)
 	v1.RegisterWagerServiceServer(s, h)
 

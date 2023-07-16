@@ -19,7 +19,7 @@
     "application/json"
   ],
   "paths": {
-    "/buy": {
+    "/buy/{wagerId}": {
       "post": {
         "summary": "Create a buy",
         "description": "Create a buy to the server.",
@@ -40,11 +40,24 @@
         },
         "parameters": [
           {
+            "name": "wagerId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1BuyRequest"
+              "type": "object",
+              "properties": {
+                "buyingPrice": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
             }
           }
         ],
@@ -77,18 +90,8 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
-        }
-      }
-    },
-    "v1BuyRequest": {
-      "type": "object",
-      "properties": {
-        "buyingPrice": {
-          "type": "number",
-          "format": "double"
         }
       }
     },
@@ -96,10 +99,12 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int64"
         },
-        "buyId": {
-          "type": "string"
+        "wagerId": {
+          "type": "integer",
+          "format": "int64"
         },
         "buyingPrice": {
           "type": "number",

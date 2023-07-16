@@ -5,6 +5,7 @@ package v1;
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -22,7 +23,7 @@ service BuyService {
   rpc Buy(BuyRequest) returns (BuyResponse) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/buys
-      post: "/buy"
+      post: "/buy/{wager_id}"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -34,12 +35,13 @@ service BuyService {
 }
 
 message BuyRequest {
-  double buying_price = 1;
+  uint32 wager_id = 1;
+  double buying_price = 2;
 }
 
 message BuyResponse {
-    string id = 1;
-    string buy_id = 2;
-    double buying_price = 3;
-    google.protobuf.Timestamp bought_at = 4;
+  uint32 id = 1;
+  uint32 wager_id = 2 [(validate.rules).uint32.gt = 0];
+  double buying_price = 3 [(validate.rules).double.gt = 0];
+  google.protobuf.Timestamp bought_at = 4;
 }

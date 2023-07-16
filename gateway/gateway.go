@@ -15,16 +15,17 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/encoding/protojson"
 
-	"github.com/dotdak/exchange-system/insecure"
-	"github.com/dotdak/exchange-system/pkg/utils"
-	pbExample "github.com/dotdak/exchange-system/proto"
+	"github.com/dotdak/exchange-system/pkg/es_errors"
+	"github.com/dotdak/exchange-system/pkg/insecure"
 	v1 "github.com/dotdak/exchange-system/proto/v1"
 	"github.com/dotdak/exchange-system/third_party"
 )
 
+const SWAGGER_PREFIX = "/swagger"
+
 // getOpenAPIHandler serves an OpenAPI UI.
-// Adapted from https://github.com/philips/grpc-gateway-example/blob/a269bcb5931ca92be0ceae6130ac27ae89582ecc/cmd/serve.go#L63
 func getOpenAPIHandler() http.Handler {
 	mime.AddExtensionType(".svg", "image/svg+xml")
 	// Use subdirectory in embedded files
@@ -32,7 +33,8 @@ func getOpenAPIHandler() http.Handler {
 	if err != nil {
 		panic("couldn't create sub filesystem: " + err.Error())
 	}
-	return http.FileServer(http.FS(subFS))
+
+	return http.StripPrefix(SWAGGER_PREFIX, http.FileServer(http.FS(subFS)))
 }
 
 // Run runs the gRPC-Gateway, dialling the provided address.
@@ -40,11 +42,11 @@ func Run(dialAddr string) error {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, ioutil.Discard, ioutil.Discard)
 	grpclog.SetLoggerV2(log)
-
+	ctx := context.Background()
 	// Create a client connection to the gRPC Server we just started.
 	// This is where the gRPC-Gateway proxies the requests.
 	conn, err := grpc.DialContext(
-		context.Background(),
+		ctx,
 		dialAddr,
 		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(insecure.CertPool, "")),
 		grpc.WithBlock(),
@@ -53,11 +55,30 @@ func Run(dialAddr string) error {
 		return fmt.Errorf("failed to dial server: %w", err)
 	}
 
-	gwmux := runtime.NewServeMux()
-	err = utils.AnyError(
-		pbExample.RegisterUserServiceHandler(context.Background(), gwmux, conn),
-		v1.RegisterBuyServiceHandler(context.Background(), gwmux, conn),
-		v1.RegisterWagerServiceHandler(context.Background(), gwmux, conn),
+	gwmux := runtime.NewServeMux(
+		runtime.WithErrorHandler(func(ctx context.Context, sm *runtime.ServeMux, m runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+			newError := runtime.HTTPStatusError{
+				HTTPStatus: 400,
+				Err:        err,
+			}
+			// using default handler to do the rest of heavy lifting of marshaling error and adding headers
+			runtime.DefaultHTTPErrorHandler(ctx, sm, m, w, r, &newError)
+		}),
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+			Marshaler: &runtime.JSONPb{
+				MarshalOptions: protojson.MarshalOptions{
+					EmitUnpopulated: true,
+					UseProtoNames:   true,
+				},
+				UnmarshalOptions: protojson.UnmarshalOptions{
+					DiscardUnknown: true,
+				},
+			},
+		}),
+	)
+	err = es_errors.AnyError(
+		v1.RegisterBuyServiceHandler(ctx, gwmux, conn),
+		v1.RegisterWagerServiceHandler(ctx, gwmux, conn),
 	)
 
 	if err != nil {
@@ -74,16 +95,13 @@ func Run(dialAddr string) error {
 	gwServer := &http.Server{
 		Addr: gatewayAddr,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// if strings.HasPrefix(r.URL.Path, "/swagger") {
-			// 	oa.ServeHTTP(w, r)
-			// 	return
-			// }
-			// gwmux.ServeHTTP(w, r)
-			if strings.HasPrefix(r.URL.Path, "/api") {
-				gwmux.ServeHTTP(w, r)
+			if strings.HasPrefix(r.URL.Path, SWAGGER_PREFIX) {
+				// r.URL.Path = strings.TrimSuffix(r.URL.Path, "/") + "/"
+				oa.ServeHTTP(w, r)
 				return
 			}
-			oa.ServeHTTP(w, r)
+
+			gwmux.ServeHTTP(w, r)
 		}),
 	}
 	// Empty parameters mean use the TLS Config specified with the server.

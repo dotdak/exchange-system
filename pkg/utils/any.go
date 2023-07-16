@@ -10,13 +10,3 @@ func Any[K comparable](vals ...K) K {
 
 	return zero
 }
-
-func AnyError(errs ...error) error {
-	for _, err := range errs {
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
