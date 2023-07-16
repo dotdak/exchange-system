@@ -3,10 +3,12 @@
 package integration
 
 import (
+	"os"
 	"testing"
 
 	"github.com/dotdak/exchange-system/handler"
 	"github.com/dotdak/exchange-system/infrastructure"
+	"github.com/dotdak/exchange-system/pkg/utils"
 	"github.com/dotdak/exchange-system/repo"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/gorm"
@@ -22,11 +24,11 @@ type MySqlRepositoryTestSuite struct {
 
 func (p *MySqlRepositoryTestSuite) SetupSuite() {
 	db, err := infrastructure.NewMysqlDb(&infrastructure.DbConfig{
-		Username:     "test",
-		Password:     "test",
-		Host:         "localhost",
-		Port:         "3306",
-		DatabaseName: "exchange-test",
+		Username:     utils.Any(os.Getenv("TEST_DB_USER"), "test"),
+		Password:     utils.Any(os.Getenv("TEST_DB_PASSWORD"), "test"),
+		Host:         utils.Any(os.Getenv("TEST_DB_HOST"), "db"),
+		Port:         utils.Any(os.Getenv("TEST_DB_PORT"), "3306"),
+		DatabaseName: utils.Any(os.Getenv("TEST_DB_NAME"), "exchange-test"),
 	})
 	if err != nil {
 		panic(err)
