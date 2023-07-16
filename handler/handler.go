@@ -124,7 +124,7 @@ func (h *HandlerImpl) Buy(ctx context.Context, req *v1.BuyRequest) (*v1.BuyRespo
 		wager.PercentageSold = new(uint32)
 	}
 
-	*wager.PercentageSold = uint32(math.Round(*wager.AmountSold / wager.SellingPrice * 100))
+	*wager.PercentageSold = uint32(math.Round(*wager.AmountSold / float64(wager.TotalWagerValue) * 100))
 
 	wager, err = h.wagerRepo.Update(ctx, wager)
 	if err != nil {

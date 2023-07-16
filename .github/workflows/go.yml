@@ -65,6 +65,12 @@ jobs:
     services:
       db:
         image: mysql:8.0.33
+        ports: 3306:3306
+        environment:
+          MYSQL_DATABASE: exchange-test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+          MYSQL_ROOT_PASSWORD: roottest
     steps:
       - name: Check out code
         uses: actions/checkout@v3
