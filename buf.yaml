@@ -7,14 +7,11 @@ lint:
   use:
     - DEFAULT
   ignore_only:
-    PACKAGE_DIRECTORY_MATCH:
-      - example.proto
     PACKAGE_VERSION_SUFFIX:
-      - example.proto
-    RPC_REQUEST_RESPONSE_UNIQUE:
-      - example.proto
+      - v1/buy_service.proto
+      - v1/wager_service.proto
     RPC_RESPONSE_STANDARD_NAME:
-      - example.proto
+      - v1/wager_service.proto
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/envoyproxy/protoc-gen-validate

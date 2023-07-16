@@ -4,7 +4,9 @@ go 1.18
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.0.2
+	github.com/go-playground/validator/v10 v10.14.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0
+	github.com/testcontainers/testcontainers-go/modules/compose v0.21.0
 	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37
 	google.golang.org/grpc v1.53.0-dev
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
@@ -64,7 +66,6 @@ require (
 	github.com/go-openapi/swag v0.19.14 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.14.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
@@ -127,8 +128,6 @@ require (
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/testcontainers/testcontainers-go v0.21.0 // indirect
-	github.com/testcontainers/testcontainers-go/modules/compose v0.21.0 // indirect
-	github.com/testcontainers/testcontainers-go/modules/mysql v0.21.0 // indirect
 	github.com/theupdateframework/notary v0.7.0 // indirect
 	github.com/tilt-dev/fsnotify v1.4.8-0.20220602155310-fff9c274a375 // indirect
 	github.com/tonistiigi/fsutil v0.0.0-20230105215944-fb433841cbfa // indirect
@@ -176,7 +175,6 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
