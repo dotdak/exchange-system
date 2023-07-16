@@ -3,6 +3,7 @@ syntax="proto3";
 package v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -60,8 +61,8 @@ message CreateWagerResponse {
   uint32 selling_percentage = 4;
   double selling_price = 5;
   double current_selling_price = 6;
-  uint32 percentage_sold = 7;
-  double amount_sold = 8;
+  google.protobuf.UInt32Value percentage_sold = 7;
+  google.protobuf.DoubleValue amount_sold = 8;
   google.protobuf.Timestamp placed_at = 9;
 }
 

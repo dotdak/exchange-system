@@ -26,6 +26,26 @@ func (p *MySqlRepositoryTestSuite) TestWagerRepo_Create() {
 		p.Assert().Error(err)
 	})
 
+	p.Run("Given Invalid SellingPercentage then should not save", func() {
+		// Given
+		newWager := []*v1.CreateWagerRequest{{
+			TotalWagerValue:   1,
+			Odds:              1,
+			SellingPercentage: 101,
+		}, {
+			TotalWagerValue:   1,
+			Odds:              1,
+			SellingPercentage: 0,
+		}}
+
+		// When
+		for _, wager := range newWager {
+			_, err := p.handler.CreateWager(ctx, wager)
+			//Then
+			p.Assert().Error(err)
+		}
+	})
+
 	p.Run("Given SellingPrice < Total x Percentage then should not save", func() {
 		// Given
 		newWager := &v1.CreateWagerRequest{
@@ -127,6 +147,8 @@ func (p *MySqlRepositoryTestSuite) TestWagerRepo_Create() {
 		p.Assert().NoError(err)
 		p.Assert().Equal(uint(1), actualWager.ID)
 		p.Assert().Equal(1.22, actualWager.SellingPrice)
+		p.Assert().Nil(actualWager.AmountSold)
+		p.Assert().Nil(actualWager.PercentageSold)
 	})
 }
 
@@ -185,58 +207,3 @@ func (p *MySqlRepositoryTestSuite) TestWagerRepo_Get() {
 		p.Assert().Equal(1.22, actualWager.SellingPrice)
 	})
 }
-
-// func (p *MySqlRepositoryTestSuite) TestWagerRepo_Update() {
-// 	ctx := context.Background()
-// 	p.Run("Given inconsistency CurrentSellingPrice SellingPrice and AmountSold then should not save", func() {
-// 		// Given
-// 		newWager := &v1.CreateWagerRequest{
-// 			TotalWagerValue:     1,
-// 			Odds:                1,
-// 			SellingPercentage:   1,
-// 			SellingPrice:        1.22,
-// 		}
-// 		// When
-// 		wager, err := p.handler.CreateWager(ctx, newWager)
-// 		// Then
-// 		p.Assert().NoError(err)
-
-// 		// Given
-// 		wager.PercentageSold = 2
-// 		wager.AmountSold = 2.22
-// 		// When
-// 		_, err = p.wagerRepo.Update(ctx, wager)
-// 		// Then
-// 		p.Assert().Error(err)
-// 	})
-
-// 	p.Run("Success", func() {
-// 		// Given
-// 		newWager := &v1.CreateWagerRequest{
-// 			BaseModel:           dao.BaseModel{ID: 1},
-// 			TotalWagerValue:     1,
-// 			Odds:                1,
-// 			SellingPercentage:   1,
-// 			SellingPrice:        1.22,
-// 			CurrentSellingPrice: 1.22,
-// 			PlacedAt:            time.Now(),
-// 		}
-// 		// When
-// 		newWager, err := p.handler.CreateWager(ctx, newWager)
-// 		// Then
-// 		p.Assert().NoError(err)
-
-// 		// Given
-// 		newWager.PercentageSold = 2
-// 		// When
-// 		_, err = p.wagerRepo.Update(ctx, newWager)
-// 		// Then
-// 		p.Assert().NoError(err)
-
-// 		// When
-// 		actualWager, err := p.wagerRepo.Get(ctx, uint32(newWager.ID))
-// 		// Then
-// 		p.Assert().NoError(err)
-// 		p.Assert().Equal(uint32(2), actualWager.PercentageSold)
-// 	})
-// }

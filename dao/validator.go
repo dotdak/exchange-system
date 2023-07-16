@@ -29,9 +29,13 @@ func WagerStructLevelValidation(sl validator.StructLevel) {
 		return
 	}
 
-	if wager.AmountSold <= 0 && (wager.CurrentSellingPrice > wager.SellingPrice ||
-		wager.AmountSold+wager.CurrentSellingPrice > wager.SellingPrice) {
+	if (wager.AmountSold == nil || *wager.AmountSold <= 0) && wager.CurrentSellingPrice > wager.SellingPrice {
 		sl.ReportError(wager.CurrentSellingPrice, "csprice", "CurrentSellingPrice", "currentgtsellingprice", "")
+		return
+	}
+
+	if wager.AmountSold != nil && *wager.AmountSold > 0 && *wager.AmountSold+wager.CurrentSellingPrice > wager.SellingPrice {
+		sl.ReportError(wager.CurrentSellingPrice, "csprice", "CurrentSellingPrice", "amountcurrentgtsellingprice", "")
 		return
 	}
 }

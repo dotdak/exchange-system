@@ -3,14 +3,12 @@
 package integration
 
 import (
-	"context"
 	"testing"
 
 	"github.com/dotdak/exchange-system/handler"
 	"github.com/dotdak/exchange-system/infrastructure"
 	"github.com/dotdak/exchange-system/repo"
 	"github.com/stretchr/testify/suite"
-	tc "github.com/testcontainers/testcontainers-go/modules/compose"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +17,6 @@ type MySqlRepositoryTestSuite struct {
 	buyRepo   repo.BuyRepo
 	wagerRepo repo.WagerRepo
 	handler   handler.Handler
-	docker    tc.ComposeStack
 	suite.Suite
 }
 
@@ -51,5 +48,4 @@ func (p *MySqlRepositoryTestSuite) SetupSubTest() {
 
 func (p *MySqlRepositoryTestSuite) TearDownAllSuite() {
 	Teardown(p.db)
-	p.docker.Down(context.Background())
 }

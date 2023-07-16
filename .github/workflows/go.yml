@@ -47,3 +47,13 @@ jobs:
         run: make generate
       - name: Check for a diff
         run: git diff --exit-code
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    container:
+      image: golang:latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Test
+        run: go test ./...

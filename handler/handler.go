@@ -116,8 +116,15 @@ func (h *HandlerImpl) Buy(ctx context.Context, req *v1.BuyRequest) (*v1.BuyRespo
 	}
 
 	wager.CurrentSellingPrice -= req.BuyingPrice
-	wager.AmountSold += req.BuyingPrice
-	wager.PercentageSold = uint32(math.Round(wager.AmountSold / wager.SellingPrice * 100))
+	if wager.AmountSold == nil {
+		wager.AmountSold = new(float64)
+	}
+	*wager.AmountSold += req.BuyingPrice
+	if wager.PercentageSold == nil {
+		wager.PercentageSold = new(uint32)
+	}
+
+	*wager.PercentageSold = uint32(math.Round(*wager.AmountSold / wager.SellingPrice * 100))
 
 	wager, err = h.wagerRepo.Update(ctx, wager)
 	if err != nil {

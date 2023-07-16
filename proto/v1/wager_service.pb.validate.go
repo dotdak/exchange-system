@@ -215,9 +215,63 @@ func (m *CreateWagerResponse) validate(all bool) error {
 
 	// no validation rules for CurrentSellingPrice
 
-	// no validation rules for PercentageSold
+	if all {
+		switch v := interface{}(m.GetPercentageSold()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateWagerResponseValidationError{
+					field:  "PercentageSold",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateWagerResponseValidationError{
+					field:  "PercentageSold",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPercentageSold()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateWagerResponseValidationError{
+				field:  "PercentageSold",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
-	// no validation rules for AmountSold
+	if all {
+		switch v := interface{}(m.GetAmountSold()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateWagerResponseValidationError{
+					field:  "AmountSold",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateWagerResponseValidationError{
+					field:  "AmountSold",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetAmountSold()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateWagerResponseValidationError{
+				field:  "AmountSold",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if all {
 		switch v := interface{}(m.GetPlacedAt()).(type) {
