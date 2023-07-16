@@ -15,6 +15,7 @@ func TestNewHandler(t *testing.T) {
 	type args struct {
 		wagerRepo repo.WagerRepo
 		buyRepo   repo.BuyRepo
+		logger    *log.Logger
 	}
 	tests := []struct {
 		name string
@@ -25,7 +26,7 @@ func TestNewHandler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewHandler(tt.args.wagerRepo, tt.args.buyRepo); !reflect.DeepEqual(got, tt.want) {
+			if got := NewHandler(tt.args.wagerRepo, tt.args.buyRepo, tt.args.logger); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewHandler() = %v, want %v", got, tt.want)
 			}
 		})

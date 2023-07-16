@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"log"
 
 	"github.com/dotdak/exchange-system/dao"
 	"gorm.io/gorm"
@@ -15,15 +16,18 @@ type WagerRepo interface {
 }
 
 type WagerRepoImpl struct {
-	db *gorm.DB
+	db     *gorm.DB
+	logger *log.Logger
 }
 
 func NewWagerRepo(
 	db *gorm.DB,
+	logger *log.Logger,
 ) WagerRepo {
 	db.AutoMigrate(&dao.Wager{})
 	return &WagerRepoImpl{
-		db: db,
+		logger: logger,
+		db:     db,
 	}
 }
 

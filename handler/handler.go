@@ -37,9 +37,10 @@ type HandlerImpl struct {
 func NewHandler(
 	wagerRepo repo.WagerRepo,
 	buyRepo repo.BuyRepo,
+	logger *log.Logger,
 ) Handler {
 	return &HandlerImpl{
-		logger:    log.Default(),
+		logger:    logger,
 		wagerRepo: wagerRepo,
 		buyRepo:   buyRepo,
 	}

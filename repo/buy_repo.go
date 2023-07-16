@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"log"
 
 	"github.com/dotdak/exchange-system/dao"
 	"gorm.io/gorm"
@@ -12,15 +13,18 @@ type BuyRepo interface {
 }
 
 type BuyRepoImpl struct {
-	db *gorm.DB
+	db     *gorm.DB
+	logger *log.Logger
 }
 
 func NewBuyRepo(
 	db *gorm.DB,
+	logger *log.Logger,
 ) BuyRepo {
 	db.AutoMigrate(&dao.Buy{})
 	return &BuyRepoImpl{
-		db: db,
+		logger: logger,
+		db:     db,
 	}
 }
 
