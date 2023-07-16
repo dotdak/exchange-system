@@ -16,7 +16,6 @@ generate: ## Generate protobuf
 
 lint: ## Run lint
 	buf lint
-	buf breaking --against 'https://github.com/dotdak/exchange-system.git#branch=master'
 
 wire:
 	wire ./...
@@ -29,7 +28,8 @@ install: ## Install prerequisites software for development
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
-		github.com/envoyproxy/protoc-gen-validate
+		github.com/envoyproxy/protoc-gen-validate \
+		github.com/google/wire/cmd/wire
 	curl -sSL \
     	"https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$(shell uname -s)-$(shell uname -m)" \
     	-o "$(shell go env GOPATH)/bin/buf" && \
