@@ -24,25 +24,6 @@ type MySqlRepositoryTestSuite struct {
 }
 
 func (p *MySqlRepositoryTestSuite) SetupSuite() {
-	// Given
-	ctx := context.Background()
-	// container, err := mysql.RunContainer(
-	// 	ctx,
-	// 	mysql.WithDatabase("exchange-test"),
-	// )
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// host, err := container.Host(ctx)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// compose, err := tc.NewDockerCompose("docker-compose.it.yml")
-	// p.docker = compose
-	// p.Assert().NoError(err)
-	// host := "localhost"
-
 	db, err := infrastructure.NewMysqlDb(&infrastructure.DbConfig{
 		Username:     "test",
 		Password:     "test",

@@ -7,7 +7,7 @@ jobs:
     container: golang:latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           set-safe-directory: "*"
       - name: Build
@@ -19,7 +19,7 @@ jobs:
       image: golang:latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install tools
         run: make install
       - name: Lint
@@ -31,7 +31,9 @@ jobs:
       image: golang:latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       - name: Install tools
         run: make install && go mod tidy
       - name: Regenerate files
