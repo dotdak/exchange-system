@@ -11,8 +11,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-        with:
-          set-safe-directory: "*"
+      - name: Set up Git
+        run: |
+          git config --global init.defaultBranch main
+          git config --global --add safe.directory /__w/exchange-system/exchange-system
       - name: Build
         run: go build -v ./...
   lint:
@@ -35,9 +37,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-          set-safe-directory: "*"
+      - name: Set up Git
+        run: |
+          git config --global init.defaultBranch main
+          git config --global --add safe.directory /__w/exchange-system/exchange-system
       - run: git checkout HEAD^
       - name: Install tools
         run: make install && go mod tidy
