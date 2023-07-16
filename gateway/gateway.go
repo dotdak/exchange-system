@@ -17,7 +17,9 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/dotdak/exchange-system/insecure"
-	pbExample "github.com/dotdak/exchange-system/proto/v1"
+	"github.com/dotdak/exchange-system/pkg/utils"
+	pbExample "github.com/dotdak/exchange-system/proto"
+	v1 "github.com/dotdak/exchange-system/proto/v1"
 	"github.com/dotdak/exchange-system/third_party"
 )
 
@@ -52,7 +54,12 @@ func Run(dialAddr string) error {
 	}
 
 	gwmux := runtime.NewServeMux()
-	err = pbExample.RegisterUserServiceHandler(context.Background(), gwmux, conn)
+	err = utils.AnyError(
+		pbExample.RegisterUserServiceHandler(context.Background(), gwmux, conn),
+		v1.RegisterBuyServiceHandler(context.Background(), gwmux, conn),
+		v1.RegisterWagerServiceHandler(context.Background(), gwmux, conn),
+	)
+
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}

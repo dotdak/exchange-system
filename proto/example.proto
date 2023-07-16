@@ -2,6 +2,7 @@ syntax="proto3";
 
 package example;
 
+import "google/protobuf/struct.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -34,7 +35,7 @@ service UserService {
       tags: "Users"
     };
   }
-  rpc ListUsers(ListUsersRequest) returns (stream User) {
+  rpc ListUsers(ListUsersRequest) returns (google.protobuf.ListValue) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/users
       get: "/api/v1/users"

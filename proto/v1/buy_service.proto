@@ -1,0 +1,45 @@
+syntax="proto3";
+
+package v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/dotdak/exchange-system/proto;v1";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  schemes: HTTPS;
+};
+
+service BuyService {
+  rpc Buy(BuyRequest) returns (BuyResponse) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/buys
+      post: "/buy"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a buy"
+      description: "Create a buy to the server."
+      tags: "Buys"
+    };
+  }
+}
+
+message BuyRequest {
+  double buying_price = 1;
+}
+
+message BuyResponse {
+    string id = 1;
+    string buy_id = 2;
+    double buying_price = 3;
+    google.protobuf.Timestamp bought_at = 4;
+}

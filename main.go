@@ -10,9 +10,10 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/dotdak/exchange-system/gateway"
+	"github.com/dotdak/exchange-system/handler"
 	"github.com/dotdak/exchange-system/insecure"
-	pbExample "github.com/dotdak/exchange-system/proto/v1"
-	"github.com/dotdak/exchange-system/server"
+	pbExample "github.com/dotdak/exchange-system/proto"
+	v1 "github.com/dotdak/exchange-system/proto/v1"
 )
 
 func main() {
@@ -30,7 +31,12 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbExample.RegisterUserServiceServer(s, server.New())
+	pbExample.RegisterUserServiceServer(s, handler.New())
+
+	// TODO
+	h := handler.NewRepo(nil, nil)
+	v1.RegisterBuyServiceServer(s, h)
+	v1.RegisterWagerServiceServer(s, h)
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)
