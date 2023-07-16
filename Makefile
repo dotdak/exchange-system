@@ -12,6 +12,7 @@ help:
 
 generate: ## Generate protobuf
 	buf generate
+	wire ./...
 
 lint: ## Run lint
 	buf lint
