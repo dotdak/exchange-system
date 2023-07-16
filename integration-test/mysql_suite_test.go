@@ -34,11 +34,11 @@ func (p *MySqlRepositoryTestSuite) SetupSuite() {
 	if err != nil {
 		panic(err)
 	}
-
+	logger := infrastructure.NullLogger()
 	p.db = db
-	p.buyRepo = repo.NewBuyRepo(db)
-	p.wagerRepo = repo.NewWagerRepo(db)
-	p.handler = handler.NewHandler(p.wagerRepo, p.buyRepo)
+	p.buyRepo = repo.NewBuyRepo(db, logger)
+	p.wagerRepo = repo.NewWagerRepo(db, logger)
+	p.handler = handler.NewHandler(p.wagerRepo, p.buyRepo, logger)
 }
 
 func TestMySqlRepositoryTestSuite(t *testing.T) {
