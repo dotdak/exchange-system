@@ -1,0 +1,115 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/buy_service.proto",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "BuyService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/buy": {
+      "post": {
+        "summary": "Create a buy",
+        "description": "Create a buy to the server.",
+        "operationId": "BuyService_Buy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BuyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BuyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Buys"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1BuyRequest": {
+      "type": "object",
+      "properties": {
+        "buyingPrice": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "v1BuyResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "buyId": {
+          "type": "string"
+        },
+        "buyingPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "boughtAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

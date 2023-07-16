@@ -24,18 +24,18 @@ func (h *Handler) CreateWager(context.Context, *v1.CreateWagerRequest) (*v1.Crea
 }
 
 // ListWagers implements v1.WagerServiceServer.
-func (h *Handler) ListWagers(context.Context, *v1.ListWagersRequest) (*structpb.ListValue, error) {
-	// buf, err := json.Marshal(b.users)
-	// if err != nil {
-	// 	return nil, err
-	// }
+func (h *Handler) ListWagers(ctx context.Context, req *v1.ListWagersRequest) (*structpb.ListValue, error) {
+	buf, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
 
-	// v := structpb.ListValue{}
-	// if err := v.UnmarshalJSON(buf); err != nil {
-	// 	return nil, err
-	// }
+	v := structpb.ListValue{}
+	if err := v.UnmarshalJSON(buf); err != nil {
+		return nil, err
+	}
 
-	// return &v, nil
+	return &v, nil
 }
 
 // Buy implements v1.BuyServiceServer.

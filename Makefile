@@ -5,7 +5,7 @@ lint:
 	buf lint
 	buf breaking --against 'https://github.com/dotdak/exchange-system.git#branch=master'
 
-BUF_VERSION:=0.40.0
+BUF_VERSION:=1.23.1
 
 install:
 	go install \

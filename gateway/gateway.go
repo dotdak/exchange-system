@@ -74,6 +74,11 @@ func Run(dialAddr string) error {
 	gwServer := &http.Server{
 		Addr: gatewayAddr,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// if strings.HasPrefix(r.URL.Path, "/swagger") {
+			// 	oa.ServeHTTP(w, r)
+			// 	return
+			// }
+			// gwmux.ServeHTTP(w, r)
 			if strings.HasPrefix(r.URL.Path, "/api") {
 				gwmux.ServeHTTP(w, r)
 				return

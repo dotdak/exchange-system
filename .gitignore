@@ -20,4 +20,3 @@
 # Go workspace file
 go.work
 .vscode
-third_party/OpenAPI

@@ -1,0 +1,197 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/wagger_service.proto",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "WagerService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/wagers": {
+      "get": {
+        "summary": "List wagers",
+        "description": "List all wagers on the server.",
+        "operationId": "WagerService_ListWagers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Wagers"
+        ]
+      },
+      "post": {
+        "summary": "Create a wager",
+        "description": "Create a wager to the server.",
+        "operationId": "WagerService_CreateWager",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateWagerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateWagerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Wagers"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateWagerRequest": {
+      "type": "object",
+      "properties": {
+        "totalWagerValue": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "odds": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sellingPercentage": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sellingPrice": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "v1CreateWagerResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "totalWagerValue": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "odds": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sellingPercentage": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sellingPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "currentSellingPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "percentageSold": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "amountSold": {
+          "type": "number",
+          "format": "double"
+        },
+        "placedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
