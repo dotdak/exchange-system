@@ -6,6 +6,7 @@ import (
 
 	"github.com/dotdak/exchange-system/dao"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type WagerRepo interface {
@@ -13,6 +14,7 @@ type WagerRepo interface {
 	Update(ctx context.Context, wager *dao.Wager) (*dao.Wager, error)
 	List(ctx context.Context, offset, limit uint) ([]*dao.Wager, error)
 	Get(ctx context.Context, id uint32) (*dao.Wager, error)
+	GetForUpdate(ctx context.Context, id uint32) (*dao.Wager, error)
 }
 
 type WagerRepoImpl struct {
@@ -61,6 +63,15 @@ func (r *WagerRepoImpl) List(ctx context.Context, offset, limit uint) ([]*dao.Wa
 func (r *WagerRepoImpl) Get(ctx context.Context, id uint32) (*dao.Wager, error) {
 	var wager dao.Wager
 	if err := r.db.First(&wager, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &wager, nil
+}
+
+func (r *WagerRepoImpl) GetForUpdate(ctx context.Context, id uint32) (*dao.Wager, error) {
+	var wager dao.Wager
+	if err := r.db.Clauses(clause.Locking{Strength: "UPDATE"}).First(&wager, id).Error; err != nil {
 		return nil, err
 	}
 

@@ -23,6 +23,6 @@ func BuildHandler(ctx context.Context) (Handler, error) {
 	logger := infrastructure.NewLogger()
 	wagerRepo := repo.NewWagerRepo(db, logger)
 	buyRepo := repo.NewBuyRepo(db, logger)
-	handler := NewHandler(wagerRepo, buyRepo, logger)
+	handler := NewHandler(wagerRepo, buyRepo, logger, db)
 	return handler, nil
 }

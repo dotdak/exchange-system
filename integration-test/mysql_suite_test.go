@@ -26,7 +26,7 @@ func (p *MySqlRepositoryTestSuite) SetupSuite() {
 	db, err := infrastructure.NewMysqlDb(&infrastructure.DbConfig{
 		Username:     utils.Any(os.Getenv("TEST_DB_USER"), "test"),
 		Password:     utils.Any(os.Getenv("TEST_DB_PASSWORD"), "test"),
-		Host:         utils.Any(os.Getenv("TEST_DB_HOST"), "db"),
+		Host:         utils.Any(os.Getenv("TEST_DB_HOST"), "dbtest"),
 		Port:         utils.Any(os.Getenv("TEST_DB_PORT"), "3306"),
 		DatabaseName: utils.Any(os.Getenv("TEST_DB_NAME"), "exchange-test"),
 	})
@@ -37,7 +37,7 @@ func (p *MySqlRepositoryTestSuite) SetupSuite() {
 	p.db = db
 	p.buyRepo = repo.NewBuyRepo(db, logger)
 	p.wagerRepo = repo.NewWagerRepo(db, logger)
-	p.handler = handler.NewHandler(p.wagerRepo, p.buyRepo, logger)
+	p.handler = handler.NewHandler(p.wagerRepo, p.buyRepo, logger, db)
 }
 
 func TestMySqlRepositoryTestSuite(t *testing.T) {

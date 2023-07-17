@@ -9,6 +9,7 @@ import (
 	v1 "github.com/dotdak/exchange-system/proto/v1"
 	"github.com/dotdak/exchange-system/repo"
 	"google.golang.org/protobuf/types/known/structpb"
+	"gorm.io/gorm"
 )
 
 func TestNewHandler(t *testing.T) {
@@ -16,6 +17,7 @@ func TestNewHandler(t *testing.T) {
 		wagerRepo repo.WagerRepo
 		buyRepo   repo.BuyRepo
 		logger    *log.Logger
+		db        *gorm.DB
 	}
 	tests := []struct {
 		name string
@@ -26,7 +28,7 @@ func TestNewHandler(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewHandler(tt.args.wagerRepo, tt.args.buyRepo, tt.args.logger); !reflect.DeepEqual(got, tt.want) {
+			if got := NewHandler(tt.args.wagerRepo, tt.args.buyRepo, tt.args.logger, tt.args.db); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewHandler() = %v, want %v", got, tt.want)
 			}
 		})
@@ -40,6 +42,7 @@ func TestHandlerImpl_CreateWager(t *testing.T) {
 		logger                          *log.Logger
 		wagerRepo                       repo.WagerRepo
 		buyRepo                         repo.BuyRepo
+		db                              *gorm.DB
 	}
 	type args struct {
 		ctx context.Context
@@ -62,6 +65,7 @@ func TestHandlerImpl_CreateWager(t *testing.T) {
 				logger:                          tt.fields.logger,
 				wagerRepo:                       tt.fields.wagerRepo,
 				buyRepo:                         tt.fields.buyRepo,
+				db:                              tt.fields.db,
 			}
 			got, err := h.CreateWager(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
@@ -82,6 +86,7 @@ func TestHandlerImpl_ListWagers(t *testing.T) {
 		logger                          *log.Logger
 		wagerRepo                       repo.WagerRepo
 		buyRepo                         repo.BuyRepo
+		db                              *gorm.DB
 	}
 	type args struct {
 		ctx context.Context
@@ -104,6 +109,7 @@ func TestHandlerImpl_ListWagers(t *testing.T) {
 				logger:                          tt.fields.logger,
 				wagerRepo:                       tt.fields.wagerRepo,
 				buyRepo:                         tt.fields.buyRepo,
+				db:                              tt.fields.db,
 			}
 			got, err := h.ListWagers(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
@@ -124,6 +130,7 @@ func TestHandlerImpl_Buy(t *testing.T) {
 		logger                          *log.Logger
 		wagerRepo                       repo.WagerRepo
 		buyRepo                         repo.BuyRepo
+		db                              *gorm.DB
 	}
 	type args struct {
 		ctx context.Context
@@ -146,6 +153,7 @@ func TestHandlerImpl_Buy(t *testing.T) {
 				logger:                          tt.fields.logger,
 				wagerRepo:                       tt.fields.wagerRepo,
 				buyRepo:                         tt.fields.buyRepo,
+				db:                              tt.fields.db,
 			}
 			got, err := h.Buy(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {

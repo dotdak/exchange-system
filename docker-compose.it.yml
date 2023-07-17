@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  db:
+  dbtest:
     image: mysql:8.0.33
     environment:
       MYSQL_DATABASE: exchange-test
@@ -8,4 +8,4 @@ services:
       MYSQL_PASSWORD: test
       MYSQL_ROOT_PASSWORD: roottest
     ports:
-      - "3306:3306"
+      - "3307:3306"

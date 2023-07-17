@@ -14,6 +14,7 @@ import (
 	"github.com/dotdak/exchange-system/repo"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"gorm.io/gorm"
 )
 
 const DefaultLimit = 10
@@ -31,6 +32,7 @@ type HandlerImpl struct {
 	logger    *log.Logger
 	wagerRepo repo.WagerRepo
 	buyRepo   repo.BuyRepo
+	db        *gorm.DB
 }
 
 // New initializes a new Handler struct.
@@ -38,11 +40,13 @@ func NewHandler(
 	wagerRepo repo.WagerRepo,
 	buyRepo repo.BuyRepo,
 	logger *log.Logger,
+	db *gorm.DB,
 ) Handler {
 	return &HandlerImpl{
 		logger:    logger,
 		wagerRepo: wagerRepo,
 		buyRepo:   buyRepo,
+		db:        db,
 	}
 }
 
@@ -103,12 +107,25 @@ func (h *HandlerImpl) Buy(ctx context.Context, req *v1.BuyRequest) (*v1.BuyRespo
 		return nil, err
 	}
 
-	wager, err := h.wagerRepo.Get(ctx, req.WagerId)
+	tx := h.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return nil, err
+	}
+
+	wager, err := h.wagerRepo.GetForUpdate(ctx, req.WagerId)
 	if err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 
 	if wager.CurrentSellingPrice < req.BuyingPrice {
+		tx.Rollback()
 		h.logger.Printf(
 			"CurrentSellingPrice %f < BuyingPrice %f", wager.CurrentSellingPrice, req.BuyingPrice,
 		)
@@ -128,6 +145,7 @@ func (h *HandlerImpl) Buy(ctx context.Context, req *v1.BuyRequest) (*v1.BuyRespo
 
 	wager, err = h.wagerRepo.Update(ctx, wager)
 	if err != nil {
+		tx.Rollback()
 		h.logger.Fatalf("update wager failed: %v", err)
 		return nil, err
 	}
@@ -139,6 +157,11 @@ func (h *HandlerImpl) Buy(ctx context.Context, req *v1.BuyRequest) (*v1.BuyRespo
 	})
 
 	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
 		return nil, err
 	}
 
