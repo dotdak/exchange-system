@@ -1,9 +1,21 @@
 #!/bin/sh
+USAGE="Usage: start.sh -s | -ls | -ut | -it | -t args"
+
 set -e
+
 
 usage()
 {
-    echo "usage: start.sh [[-h]]"
+    echo $USAGE
+}
+
+if [ $# == 0 ] ; then
+    usage
+    exit 1;
+fi
+
+local() {
+  make local
 }
 
 start() {
@@ -31,6 +43,8 @@ test() {
 while [ "$1" != "" ]; do
     case $1 in
         -s | --start )              start
+                                    ;;
+        -ls | --local-start )       local
                                     ;;
         -ut | --unittest )          unittest
                                     ;;

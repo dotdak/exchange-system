@@ -45,7 +45,13 @@ integration-test-start: ## Run integration test
 	go test -tags=integration ./... -v -count=1
 
 integration-test-setup: ## Setup integration test infra
-	docker-compose -f docker-compose.it.yml up -d
+	docker-compose -f docker-compose.it.yml up -d --wait
 
 integration-test-teardown: ## Teardown integration test infra
 	docker-compose -f docker-compose.it.yml down -v	
+
+local:
+	docker-compose up -d --wait
+
+stop-local:
+	docker-compose down

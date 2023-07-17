@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/dotdak/exchange-system/gateway"
 	"github.com/dotdak/exchange-system/handler"
@@ -39,6 +40,7 @@ func main() {
 	}
 	v1.RegisterBuyServiceServer(s, h)
 	v1.RegisterWagerServiceServer(s, h)
+	grpc_health_v1.RegisterHealthServer(s, handler.NewHealthCheck())
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)

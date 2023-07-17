@@ -1,21 +1,26 @@
 # exchange-system
 
-[![Run on Google Cloud](https://storage.googleapis.com/cloudrun/button.svg)](https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/dotdak/exchange-system.git)
-
-All the boilerplate you need to get started with writing grpc-gateway powered
-REST services in Go.
+Grpc-gateway powered REST exchange system in Go.
 
 ## Running
 
-Running `main.go` starts a web server on https://0.0.0.0:8080/. You can configure
-the port used with the `$PORT` environment variable, and to serve on HTTP set
-`$SERVE_HTTP=true`.
+Before running, please fill in essential key-value in `.env`, then make `start.sh` be executable `chmod +x ./start.sh`
+
+Using `start.sh` scripts to run:
+
+1. Run service connecting to existing database:
 
 ```
-$ go run main.go
+./start.sh -s
 ```
 
-An OpenAPI UI is served on https://0.0.0.0:8080/.
+2. Run service with its own database:
+
+```
+./start.sh -ls
+```
+
+An OpenAPI UI is served on https://0.0.0.0:8080/swagger/#/.
 
 ### Running the standalone server
 
@@ -26,32 +31,20 @@ standalone web server instead:
 $ go run ./cmd/standalone/ --server-address dns:///0.0.0.0:10000
 ```
 
-## Getting started
+## Development
 
 After cloning the repo, there are a couple of initial steps;
 
 1. Install the generate dependencies with `make install`.
-   This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway` and
-   `protoc-gen-openapiv2` which are necessary for us to generate the Go and swagger files.
-1. If you forked this repo, or cloned it into a different directory from the github structure,
-   you will need to correct the import paths. Here's a nice `find` one-liner for accomplishing this
-   (replace `yourscmprovider.com/youruser/yourrepo` with your cloned repo path):
-   ```bash
-   $ find . -path ./vendor -prune -o -type f \( -name '*.go' -o -name '*.proto' \) -exec sed -i -e "s;github.com/dotdak/exchange-system;yourscmprovider.com/youruser/yourrepo;g" {} +
-   ```
-1. Finally, generate the files with `make generate`.
+   This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`, `protoc-gen-validate`,
+   `protoc-gen-openapiv2` and `wire` which are necessary for us to generate the Go and swagger files.
 
-Now you can run the web server with `go run main.go`.
+1. Generate the files with `make generate`.
 
-## Making it your own
+1. Running `main.go` starts a web server on https://0.0.0.0:8080/. You can configure
+   the port used with the `$PORT` environment variable, and to serve on HTTP set
+   `$SERVE_HTTP=true`.
 
-The next step is to define the interface you want to expose in
-`proto/example.proto`. See https://developers.google.com/protocol-buffers/
-tutorials and guides on writing protofiles.
-
-Once that is done, regenerate the files using
-`make generate`. This will mean you'll need to implement any functions in
-`server/server.go`, or else the build will fail since your struct won't
-be implementing the interface defined by the generated file in `proto/example.pb.go`.
-
-This should hopefully be all you need to get started playing around with the gRPC-Gateway!
+```
+$ SERVE_HTTP=true go run main.go
+```

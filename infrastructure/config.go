@@ -1,6 +1,8 @@
 package infrastructure
 
-import "os"
+import (
+	"os"
+)
 
 type DbConfig struct {
 	Username     string

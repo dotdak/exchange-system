@@ -15,10 +15,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/dotdak/exchange-system/pkg/es_errors"
 	"github.com/dotdak/exchange-system/pkg/insecure"
+	"github.com/dotdak/exchange-system/pkg/utils"
 	v1 "github.com/dotdak/exchange-system/proto/v1"
 	"github.com/dotdak/exchange-system/third_party"
 )
@@ -75,6 +77,7 @@ func Run(dialAddr string) error {
 				},
 			},
 		}),
+		runtime.WithHealthEndpointAt(grpc_health_v1.NewHealthClient(conn), "/health"),
 	)
 	err = es_errors.AnyError(
 		v1.RegisterBuyServiceHandler(ctx, gwmux, conn),
@@ -87,10 +90,7 @@ func Run(dialAddr string) error {
 
 	oa := getOpenAPIHandler()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := utils.Any(os.Getenv("PORT"), "8080")
 	gatewayAddr := "0.0.0.0:" + port
 	gwServer := &http.Server{
 		Addr: gatewayAddr,
