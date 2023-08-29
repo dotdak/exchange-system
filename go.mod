@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.0.2
-	github.com/go-playground/validator/v10 v10.14.1
+	github.com/go-playground/validator/v10 v10.15.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0
 	go.opentelemetry.io/otel v1.16.0
